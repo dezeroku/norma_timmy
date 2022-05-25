@@ -1,0 +1,217 @@
+service: aws-serverless
+frameworkVersion: '3'
+
+provider:
+  versionFunctions: false
+  name: aws
+  region: eu-central-1
+  runtime: python3.8
+  memorySize: 128
+  httpApi:
+    # We have a domain anyway
+    disableDefaultEndpoint: true
+    cors: true
+    authorizers:
+      serviceAuthorizer:
+        identitySource: $request.header.Authorization
+        issuerUrl:
+          Fn::Join:
+          - ''
+          - - 'https://cognito-idp.'
+            - '${opt:region, self:provider.region}'
+            - '.amazonaws.com/'
+            - Ref: CognitoUserPool
+        audience:
+          - Ref: CognitoUserPoolClient
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            Fn::Join:
+              - ''
+              - - arn:aws:dynamodb:${self:provider.region}:*:table/
+                - Ref: DynamoDB
+
+constructs:
+  jobs:
+    type: queue
+    worker:
+      handler: handler.consumer
+  # The front webpage configuration can also be handled like that (+ route53 via cloudformation)
+  # But this requires the project to be deployed in us-east-1
+  # The big advantage here is automatic cloudfront cache invalidation
+#  react:
+#    type: static-website
+#    path: ../front/build
+#    domain: ${self:custom.userConfig.frontDomain}
+#    certificate: ${certificate(${self:custom.customCertificate.certificateName}):CertificateArn}
+
+functions:
+  producer:
+    handler: handler.producer
+    events:
+      - httpApi:
+          method: post
+          path: /produce
+          authorizer: serviceAuthorizer
+
+    environment:
+      QUEUE_URL: ${construct:jobs.queueUrl}
+
+  items-get:
+    module: items
+    handler: get.get
+    events:
+      - httpApi:
+          method: get
+          path: /items
+          authorizer: serviceAuthorizer
+    environment:
+      DYNAMO_DB:
+        Ref: DynamoDB
+
+  item-create:
+    module: items
+    handler: create.create
+    events:
+      - httpApi:
+          method: post
+          path: /item/create
+          authorizer: serviceAuthorizer
+    environment:
+      DYNAMO_DB:
+        Ref: DynamoDB
+
+  item-delete:
+    module: items
+    handler: delete.delete
+    events:
+      - httpApi:
+          method: delete
+          path: /item/delete/{item_id}
+          authorizer: serviceAuthorizer
+    environment:
+      DYNAMO_DB:
+        Ref: DynamoDB
+
+  item-update:
+    module: items
+    handler: update.update
+    events:
+      - httpApi:
+          method: put
+          path: /item/update/{item_id}
+          authorizer: serviceAuthorizer
+    environment:
+      DYNAMO_DB:
+        Ref: DynamoDB
+
+#  cognito-signup:
+#    module: cognito
+#    handler: cognito.signup
+#    events:
+#      - cognitoUserPool:
+#          pool:
+#            Ref: CognitoUserPool
+#          trigger: PreSignUp
+#          existing: true
+#    environment:
+#      DYNAMO_DB:
+#        Ref: DynamoDB
+
+  login-login:
+    module: login
+    handler: login.login
+    events:
+      - httpApi:
+          method: get
+          path: /login/cognito-login
+
+    environment:
+      FRONT_DOMAIN: ${self:custom.userConfig.frontDomain}
+      CLIENT_POOL_ID:
+        Ref: CognitoUserPoolClient
+
+  login-logout:
+    module: login
+    handler: login.logout
+    events:
+      - httpApi:
+          method: get
+          path: /login/cognito-logout
+
+    environment:
+      FRONT_DOMAIN: ${self:custom.userConfig.frontDomain}
+      CLIENT_POOL_ID:
+        Ref: CognitoUserPoolClient
+
+plugins:
+  - serverless-lift
+  - serverless-python-requirements
+  - serverless-domain-manager
+  - serverless-s3-sync
+  - '@dezeroku/serverless-certificate-creator'
+package:
+  individually: true
+  patterns:
+    - '!node_modules/**'
+    - '!lambda_venv/**'
+    - '!resources/**'
+
+custom:
+  userConfig: ${file(user-config.yml)}
+
+  s3Sync:
+    # A simple configuration for copying static assets
+    # It also takes care of cleaning up the S3 buckets in 'remove' step
+    - bucketNameKey: FrontBucketId
+      localDir: ../front/build
+
+  pythonRequirements:
+    dockerizePip: true
+  customDomain:
+    # This requires the certificate for domain to be provided
+    domainName: ${self:custom.userConfig.apiDomain}
+    basePath: 'v1'
+    stage: ${sls:stage}
+    createRoute53Record: true
+    endpointType: regional
+    # Run as part of the `deploy`
+    #autoDomain: true
+    apiType: http
+  customCertificate:
+    # This is a cert for domain-manager, local apigateway, region cert is fine
+    -
+      certificateName: ${self:custom.userConfig.apiDomain}
+      hostedZoneNames: ${self:custom.userConfig.baseDomain}.
+      region: ${self:provider.region}
+      enabled: true
+      rewriteRecords: false
+    # This is a cert for CloudFront, so it has to be in us-east-1
+    -
+      certificateName: ${self:custom.userConfig.frontDomain}
+      hostedZoneNames: ${self:custom.userConfig.baseDomain}.
+      region: us-east-1
+      enabled: true
+      rewriteRecords: false
+    # This is a cert for Cognito Domain, has to be in us-east-1
+    -
+      certificateName: auth.${self:custom.userConfig.frontDomain}
+      hostedZoneNames: ${self:custom.userConfig.baseDomain}.
+      region: us-east-1
+      enabled: true
+      rewriteRecords: false
+
+resources:
+  - ${file(resources/front-bucket.yml)}
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cloudfront.yml)}
+  - ${file(resources/dynamodb.yml)}
