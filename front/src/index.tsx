@@ -12,27 +12,9 @@ import history from './history';
 ReactDOM.render((
     <Router history={history}>
         <Switch>
-	        <Route path="/login/cognito-parser" component={LoginParser}>
-	        </Route>
-            <Route path='/login' component={() => {
-                       // Just redirect to Cognito
-                       window.location.href = loginURL;
-                       return null;
-                   }}/>
-            <Route path='/logout-internal' component={() => {
-                       // Go to Cognito to invalidate the session
-                       window.location.href = logoutURL;
-                       return null;
-                   }}/>
-            <Route path='/logout' component={() => {
-                       // We came here from Cognito
-                       setToken('');
-                       history.push('/');
-                       return null;
-                   }}/>
-	        <PrivateRoute path="/">
+	        <Route path="/">
 	            <Home />
-	        </PrivateRoute>
+	        </Route>
         </Switch>
     </Router>), document.getElementById('root'));
 
