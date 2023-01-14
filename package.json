@@ -1,5 +1,5 @@
 {
-  "name": "front",
+  "name": "norma_timmy",
   "version": "0.1.0",
   "homepage": "https://dezeroku.github.io/norma_timmy",
   "private": true,
@@ -9,7 +9,6 @@
     "@types/react": "16.9.14",
     "@types/react-dom": "16.9.4",
     "@types/react-router-dom": "^5.1.5",
-    "axios": "^0.21.2",
     "bootstrap": "^4.4.1",
     "query-string": "^6.12.1",
     "react": "^16.13.1",
