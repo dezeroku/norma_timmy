@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/norma_timmy/static/css/main.3c38d852.chunk.css",
+    "main.js": "/norma_timmy/static/js/main.677b3c66.chunk.js",
+    "main.js.map": "/norma_timmy/static/js/main.677b3c66.chunk.js.map",
+    "runtime-main.js": "/norma_timmy/static/js/runtime-main.fec16444.js",
+    "runtime-main.js.map": "/norma_timmy/static/js/runtime-main.fec16444.js.map",
+    "static/css/2.69121389.chunk.css": "/norma_timmy/static/css/2.69121389.chunk.css",
+    "static/js/2.7a3ea5f9.chunk.js": "/norma_timmy/static/js/2.7a3ea5f9.chunk.js",
+    "static/js/2.7a3ea5f9.chunk.js.map": "/norma_timmy/static/js/2.7a3ea5f9.chunk.js.map",
+    "index.html": "/norma_timmy/index.html",
+    "precache-manifest.6de463a0d58dadc49c28883b9fde7700.js": "/norma_timmy/precache-manifest.6de463a0d58dadc49c28883b9fde7700.js",
+    "service-worker.js": "/norma_timmy/service-worker.js",
+    "static/css/2.69121389.chunk.css.map": "/norma_timmy/static/css/2.69121389.chunk.css.map",
+    "static/css/main.3c38d852.chunk.css.map": "/norma_timmy/static/css/main.3c38d852.chunk.css.map",
+    "static/js/2.7a3ea5f9.chunk.js.LICENSE.txt": "/norma_timmy/static/js/2.7a3ea5f9.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fec16444.js",
+    "static/css/2.69121389.chunk.css",
+    "static/js/2.7a3ea5f9.chunk.js",
+    "static/css/main.3c38d852.chunk.css",
+    "static/js/main.677b3c66.chunk.js"
+  ]
+}
