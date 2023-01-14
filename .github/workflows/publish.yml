@@ -9,10 +9,6 @@ on:
   workflow_dispatch:
 jobs:
   # Allow one concurrent deployment
-  concurrency:
-    group: "pages"
-    cancel-in-progress: true
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -29,6 +25,10 @@ jobs:
           path: "./build"
 
   deploy:
+    concurrency:
+      group: "pages"
+      cancel-in-progress: true
+
     permissions:
       pages: write
       id-token: write
