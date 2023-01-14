@@ -100,7 +100,7 @@ class Home extends React.Component<HomeProps, HomeState> {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto"></Nav>
-            <Form inline></Form>
+            <Form></Form>
           </Navbar.Collapse>
         </Navbar>
         <Form>
