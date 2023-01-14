@@ -28,20 +28,20 @@ class Home extends React.Component<HomeProps, HomeState> {
 
   onChange(e: any) {
     console.log(this.state.eights);
-    if (e.target.id == "fourPortsField") {
+    if (e.target.id === "fourPortsField") {
       console.log(e);
       if (e.target.value >= 0) {
         this.setState({ fours: e.target.value }, this.recalculate);
       }
     }
 
-    if (e.target.id == "eightPortsField") {
+    if (e.target.id === "eightPortsField") {
       console.log(e);
       if (e.target.value >= 0) {
         this.setState({ eights: e.target.value }, this.recalculate);
       }
     }
-    if (e.target.id == "twelvePortsField") {
+    if (e.target.id === "twelvePortsField") {
       console.log(e);
       if (e.target.value >= 0) {
         this.setState({ twelves: e.target.value }, this.recalculate);
@@ -109,7 +109,7 @@ class Home extends React.Component<HomeProps, HomeState> {
             <Form.Control
               type="number"
               placeholder={this.state.twelvesPredict.toString()}
-              value={this.state.twelves == 0 ? "" : this.state.twelves}
+              value={this.state.twelves === 0 ? "" : this.state.twelves}
               onChange={this.onChange}
             />
             <Form.Text className="text-muted">
@@ -121,7 +121,7 @@ class Home extends React.Component<HomeProps, HomeState> {
             <Form.Control
               type="number"
               placeholder={this.state.eightsPredict.toString()}
-              value={this.state.eights == 0 ? "" : this.state.eights}
+              value={this.state.eights === 0 ? "" : this.state.eights}
               onChange={this.onChange}
             />
             <Form.Text className="text-muted">
@@ -133,7 +133,7 @@ class Home extends React.Component<HomeProps, HomeState> {
             <Form.Control
               type="number"
               placeholder={this.state.foursPredict.toString()}
-              value={this.state.fours == 0 ? "" : this.state.fours}
+              value={this.state.fours === 0 ? "" : this.state.fours}
               onChange={this.onChange}
             />
             <Form.Text className="text-muted">
