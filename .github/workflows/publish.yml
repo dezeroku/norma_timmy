@@ -8,14 +8,12 @@ on:
 
   workflow_dispatch:
 jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pre-commit/action@v3.0.0
+  # Allow one concurrent deployment
+  concurrency:
+    group: "pages"
+    cancel-in-progress: true
 
-  build_and_deploy:
-    needs: pre-commit
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -25,4 +23,23 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npm run deploy
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: "./build"
+
+  deploy:
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
