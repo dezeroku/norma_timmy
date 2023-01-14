@@ -10,6 +10,7 @@ on:
 jobs:
   # Allow one concurrent deployment
   build:
+    needs: pre-commit
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
