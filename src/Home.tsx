@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Navbar, Nav, Form } from "react-bootstrap";
+import { Navbar, Form } from "react-bootstrap";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -97,17 +97,14 @@ class Home extends React.Component<HomeProps, HomeState> {
       <div className="container-fluid">
         <Navbar className="bg-light">
           <Navbar.Brand>Kalkulator Norm</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto"></Nav>
-            <Form></Form>
-          </Navbar.Collapse>
         </Navbar>
         <Form>
           <Form.Group className="mb-3" controlId="twelvePortsField">
             <Form.Label>12p ({this.state.requiredTwelves})</Form.Label>
             <Form.Control
               type="number"
+              min="0"
+              step="1"
               placeholder={this.state.twelvesPredict.toString()}
               value={this.state.twelves === 0 ? "" : this.state.twelves}
               onChange={this.onChange}
@@ -120,6 +117,8 @@ class Home extends React.Component<HomeProps, HomeState> {
             <Form.Label>8p ({this.state.requiredEights})</Form.Label>
             <Form.Control
               type="number"
+              min="0"
+              step="1"
               placeholder={this.state.eightsPredict.toString()}
               value={this.state.eights === 0 ? "" : this.state.eights}
               onChange={this.onChange}
@@ -132,6 +131,8 @@ class Home extends React.Component<HomeProps, HomeState> {
             <Form.Label>4p ({this.state.requiredFours})</Form.Label>
             <Form.Control
               type="number"
+              min="0"
+              step="1"
               placeholder={this.state.foursPredict.toString()}
               value={this.state.fours === 0 ? "" : this.state.fours}
               onChange={this.onChange}
