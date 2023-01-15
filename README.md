@@ -1,32 +1,29 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# norma_timmy
 
-## Available Scripts
+Simple JS app to calculate required factory norm.
+This is useful if e.g. you don't have parts to make only a single variant during the shift.
 
-In the project directory, you can run:
+Given three variants of a product, with different norm requirements:
 
-### `npm start`
+- 4p -> 190 required per shift
+- 8p -> 165 required per shift
+- 12p -> 115 required per shift
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+and assuming that by default only a single variant of product is done during a single shift,
+find a combination of variants of products that "fills" a single shift.
+More specifically:
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```
+a = 1/190
+b = 1/165
+c = 1/115
 
-### `npm test`
+X * a + Y * b + Z * c >= 1
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Find X, Y and Z values (in that priority) which meets the equation.
 
-### `npm run build`
+E.g. you're given X = 100, how big must Y be (if Z is 0) to meet the equation?
+If you're given X = 100 and Y = 30, how big must Z be to meet the equation?
+```
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### Development
-
-`front/mock-api/jwt` contains short code that can be pasted into the console to obtain access to the mocked API using dummy JWT.
+To simplify UX here, if user doesn't provide a value for X/Y/Z, we assume that all the other values are zeroed out.
