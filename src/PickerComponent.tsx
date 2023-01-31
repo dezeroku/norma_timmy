@@ -25,6 +25,9 @@ class PickerComponent extends React.Component<
   }
 
   on_update = (value: number) => {
+    if (value < 0) {
+      value = 0;
+    }
     this.setState({
       current: value,
     });
